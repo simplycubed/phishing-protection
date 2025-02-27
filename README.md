@@ -46,11 +46,61 @@ This Gmail add-on provides an automated layer of protection by:
 
 ### For Development/Self-Hosting
 
-1. Create a new Google Apps Script project
-2. Copy the `Code.gs` file content into your project
-3. Create an `appsscript.json` file with the provided manifest
-4. Enable the Admin Directory API in Advanced Services
-5. Deploy as a Gmail add-on
+1. Create a new Google Apps Script project:
+   - Go to [Google Apps Script](https://script.google.com/)
+   - Click "New Project"
+   - Delete any template code in the editor
+
+2. Copy the `Code.gs` file content into your project:
+   - Paste the code into the script editor
+   - Rename the file to "Code.gs" if needed
+
+3. Create an `appsscript.json` file with the provided manifest:
+   - Click on the "+" icon next to "Files" in the left sidebar
+   - Choose "Script"
+   - Name it "appsscript.json"
+   - Paste the manifest content
+
+4. Enable the necessary Google APIs:
+
+   **Enable the Admin Directory API in Apps Script:**
+   - In your Apps Script project, click on "Services" (+ icon)
+   - Scroll down and select "Admin Directory API"
+   - Click "Add"
+
+   **Enable APIs in Google Cloud Console:**
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+   - Navigate to "APIs & Services" > "Library"
+   - Search for and enable the following APIs:
+     - Gmail API
+     - Admin SDK API
+     - People API (for contacts)
+   - Configure the OAuth consent screen:
+     - Go to "APIs & Services" > "OAuth consent screen"
+     - Select "Internal" (for Workspace deployments)
+     - Fill in the required app information
+     - Add the necessary scopes (same as in the appsscript.json file)
+
+5. Connect your Apps Script project to your Google Cloud project:
+   - In Apps Script, click on the ⚙️ (Settings) icon
+   - Under "Google Cloud Platform (GCP) Project", click "Change project"
+   - Enter your GCP project number (found in GCP Console > Dashboard)
+   - Click "Set project"
+
+6. Deploy as a Gmail add-on:
+   - Click "Deploy" > "New deployment"
+   - Select "Gmail add-on" as the deployment type
+   - Fill in the description (optional)
+   - Click "Deploy"
+   - Copy the deployment URL for organization-wide deployment
+
+7. Deploy to your organization (for admins):
+   - Go to [Google Admin Console](https://admin.google.com/)
+   - Navigate to "Apps" > "Google Workspace Marketplace apps"
+   - Click "Add app" > "Add custom app" > "Add by URL"
+   - Paste the deployment URL from the previous step
+   - Configure access settings for your organization
 
 ## Configuration
 
@@ -75,29 +125,44 @@ No special admin configuration is required beyond standard add-on deployment in 
 ## How It Works
 
 1. **Directory Access**:
-
    - Employee directory data is accessed via the Google Workspace Directory API
    - Directory data is cached for one hour to improve performance
    - Falls back to personal contacts if directory access fails
 
 2. **Email Processing**:
-
    - When a user opens an email, the add-on checks the sender
    - External emails are analyzed for name similarity to internal contacts
    - Internal emails are automatically marked as safe
 
 3. **Phishing Detection**:
-
    - Extracts sender name and email domain
    - Skips internal emails quickly for efficiency
    - Compares sender name against directory using fuzzy matching
    - Uses configurable Levenshtein distance for name similarity
 
 4. **Warning System**:
-
    - Applies "SUSPICIOUS - Potential Phishing" bright red label to flagged emails
    - Displays warning card when viewing suspicious emails
    - Provides detailed sender information for verification
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Directory API Access Issues**:
+   - Verify the Admin SDK API is enabled in Google Cloud Console
+   - Ensure the user has appropriate admin permissions
+   - Check the execution logs in Apps Script editor for specific errors
+
+2. **Add-on Not Appearing in Gmail**:
+   - Refresh Gmail completely (Ctrl+F5/Cmd+R)
+   - Verify the add-on is installed in Gmail settings
+   - Check browser console for any errors
+
+3. **Label Not Appearing**:
+   - Gmail sometimes takes a few moments to display new labels
+   - Refresh Gmail or reload the page
+   - Check if the label exists in the Labels section of Gmail settings
 
 ## Contributing
 
