@@ -20,25 +20,19 @@ These attacks are particularly effective because they exploit human trust rather
 
 This Gmail add-on provides an automated layer of protection by:
 
-1. Checking the sender of every incoming email against your organization's Google Workspace directory
+1. Checking the sender of every email when it's opened against your organization's Google Workspace directory
 2. Identifying when a sender's name matches or closely resembles an employee but comes from an external domain
-3. Applying a clear warning label to suspicious emails
+3. Applying a clear bright red warning label to suspicious emails
 4. Displaying a warning notification in the Gmail sidebar when viewing these emails
-
-The add-on uses a hybrid approach to ensure comprehensive protection:
-
-- Background scanning of new emails every 5 minutes
-- Real-time checking when a user opens an email
-- Smart caching of directory data for performance optimization
 
 ## Features
 
-- **Automated Phishing Detection**: Identifies potential name spoofing attacks without user intervention
-- **Visual Warnings**: Clear labels and in-Gmail notifications for suspicious emails
+- **Automated Phishing Detection**: Identifies potential name spoofing attacks when users view emails
+- **Visual Warnings**: Clear red labels and in-Gmail notifications for suspicious emails
 - **Directory Integration**: Directly uses your Google Workspace directory via OAuth
-- **Performance Optimized**: Efficient caching of directory data and intelligent processing
+- **Performance Optimized**: Efficient caching of directory data for faster processing
 - **User Configurable**: Adjustable sensitivity settings for name matching
-- **Low Resource Impact**: Designed to work efficiently within Google's quota limits
+- **Fail-safe Design**: Falls back to personal contacts if directory access fails
 
 ## Installation
 
@@ -57,7 +51,6 @@ The add-on uses a hybrid approach to ensure comprehensive protection:
 3. Create an `appsscript.json` file with the provided manifest
 4. Enable the Admin Directory API in Advanced Services
 5. Deploy as a Gmail add-on
-6. Run the `initialSetup()` function once to configure background processing
 
 ## Configuration
 
@@ -67,14 +60,13 @@ The add-on requires these permissions:
 
 - Gmail read/modify access (to check emails and apply labels)
 - Directory API access (to verify employee names)
-- Script execution privileges (for background processing)
+- Contacts API access (as a fallback for directory information)
 
 ### User Settings
 
 Users can configure:
 
 - **Similarity Threshold** (1-5): Lower values catch more potential spoofing but may increase false positives
-- **Background Processing**: Enable/initialize automated checking of incoming emails
 
 ### Admin Configuration
 
@@ -82,16 +74,17 @@ No special admin configuration is required beyond standard add-on deployment in 
 
 ## How It Works
 
-1. **Directory Caching**:
+1. **Directory Access**:
 
-   - Employee directory data is cached daily for optimal performance
-   - Multi-level caching strategy uses both Cache and Properties storage
+   - Employee directory data is accessed via the Google Workspace Directory API
+   - Directory data is cached for one hour to improve performance
+   - Falls back to personal contacts if directory access fails
 
 2. **Email Processing**:
 
-   - Batch processing runs every 5 minutes to check recent emails
-   - On-open processing checks any emails missed by batch processing
-   - Smart tracking avoids duplicate processing
+   - When a user opens an email, the add-on checks the sender
+   - External emails are analyzed for name similarity to internal contacts
+   - Internal emails are automatically marked as safe
 
 3. **Phishing Detection**:
 
@@ -102,7 +95,7 @@ No special admin configuration is required beyond standard add-on deployment in 
 
 4. **Warning System**:
 
-   - Applies "SUSPICIOUS - Potential Phishing" label to flagged emails
+   - Applies "SUSPICIOUS - Potential Phishing" bright red label to flagged emails
    - Displays warning card when viewing suspicious emails
    - Provides detailed sender information for verification
 
@@ -115,6 +108,16 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## Enhancement Ideas
+
+Potential future improvements:
+
+- Background processing to check emails as they arrive (every 5 minutes)
+- More sophisticated phishing detection algorithms
+- User reporting of false positives/negatives
+- Dashboard for security teams to monitor threats
+- Integration with other security tools
 
 ## License
 
